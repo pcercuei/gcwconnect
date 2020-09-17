@@ -27,6 +27,8 @@ import time
 from os import listdir
 from urllib import parse
 
+import pkg_resources
+
 import pygame
 import pygame.gfxdraw
 from pygame.locals import *
@@ -68,9 +70,6 @@ colors = {
 confdir = os.environ['HOME'] + "/.local/share/gcwconnect/"
 netconfdir = confdir+"networks/"
 sysconfdir = "/usr/local/etc/network/"
-datadir = "/usr/share/gcwconnect/"
-if not os.path.exists(datadir):
-    datadir = "data/"
 
 mac_addresses = {}
 
@@ -99,9 +98,12 @@ font_small      = pygame.font.Font(font_path, 10)
 font_medium     = pygame.font.Font(font_path, 12)
 font_large      = pygame.font.Font(font_path, 16)
 font_huge       = pygame.font.Font(font_path, 48)
-gcw_font        = pygame.font.Font(os.path.join(datadir, 'gcwzero.ttf'), 25)
-font_mono_small = pygame.font.Font(
-    os.path.join(datadir, 'Inconsolata.otf'), 11)
+
+gcw_font_path   = pkg_resources.resource_string(__name__, 'gcwzero.ttf')
+gcw_font        = pygame.font.Font(gcw_font_path, 25)
+
+font_mono_path  = pkg_resources.resource_string(__name__, 'Inconsolata.otf')
+font_mono_small = pygame.font.Font(font_mono_path, 11)
 
 ###############################################################################
 #                                                                             #
@@ -1260,9 +1262,8 @@ class NetworksMenu(Menu):
             signal_icon = 'transparent.png'
             percent = None
 
-        qual_img = pygame.image.load(
-            (os.path.join(datadir, signal_icon))).convert_alpha()
-        # enc_img = pygame.image.load((os.path.join(datadir, enc_icon))).convert_alpha()
+        pkg_resources.resource_string(__name__, signal_icon)
+        qual_img = pygame.image.load(signal_icon).convert_alpha()
 
         ssid = font_mono_small.render(the_ssid, 1, self.text_color)
         if type(percent) == int:
